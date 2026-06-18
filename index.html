@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filament Etiket 6'li</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #e6e9ef;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            background: white;
+            padding: 18px 12px 22px 12px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #1e2a3a;
+            font-size: 22px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .etiket-kart {
+            background: #f8faff;
+            border: 2px dashed #2b7be4;
+            border-radius: 12px;
+            padding: 18px 12px;
+            text-align: center;
+            min-height: 155px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .etiket-kart input {
+            width: 100%;
+            padding: 14px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+            background: white;
+            font-weight: 500;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .etiket-kart input:focus {
+            border-color: #2b7be4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(43, 123, 228, 0.2);
+        }
+        .etiket-kart input::placeholder {
+            font-weight: 400;
+            font-size: 14px;
+            color: #a0aec0;
+        }
+        .butonlar {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .buton {
+            background: #1e2a3a;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .buton:hover {
+            transform: scale(1.03);
+            background: #2b3b4f;
+        }
+        .buton.yazdir {
+            background: #0a7e3d;
+        }
+        .buton.yazdir:hover {
+            background: #0d9e4b;
+        }
+        .buton.temizle {
+            background: #b91c1c;
+        }
+        .buton.temizle:hover {
+            background: #d42a2a;
+        }
+        .uyari {
+            margin-top: 18px;
+            background: #fef9e7;
+            border-left: 5px solid #f59e0b;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4b3a0a;
+        }
+
+        /* ========== YAZDIRMA ========== */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 8px !important;
+                max-width: 100% !important;
+            }
+            .butonlar, .uyari, h2 {
+                display: none !important;
+            }
+            .grid {
+                gap: 8px !important;
+            }
+            .etiket-kart {
+                border: 1.5px solid #000 !important;
+                min-height: 115px !important;
+                padding: 10px 6px !important;
+                gap: 3px !important;
+                background: white !important;
+            }
+            .etiket-kart input {
+                border: none !important;
+                font-size: 15px !important;
+                padding: 3px !important;
+                background: transparent !important;
+                font-weight: 600;
+            }
+            .etiket-kart input::placeholder {
+                color: transparent !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏷️ Filament Etiket (6'lı)</h2>
+
+    <div class="print-alani">
+        <div class="grid" id="etiketGrid"></div>
+    </div>
+
+    <div class="butonlar">
+        <button class="buton yazdir" onclick="yazdir()">🖨️ Yazdır</button>
+        <button class="buton temizle" onclick="temizle()">🗑️ Tümünü Temizle</button>
+    </div>
+
+    <div class="uyari">
+        ⚠️ <strong>Yazdırma ipucu:</strong> Yazdır butonuna basıp Zebra yazıcını seç. Kağıt boyutunu <strong>4x4 etiket</strong> olarak ayarla.
+    </div>
+</div>
+
+<script>
+    const adet = 6;
+
+    function etiketOlustur(index) {
+        const div = document.createElement('div');
+        div.className = 'etiket-kart';
+        div.innerHTML = `
+            <input type="text" placeholder="Filament Adı" class="fila-ad">
+            <input type="text" placeholder="Türü" class="fila-tur">
+            <input type="text" placeholder="Rengi" class="fila-renk">
+        `;
+        return div;
+    }
+
+    function gridDoldur() {
+        const grid = document.getElementById('etiketGrid');
+        grid.innerHTML = '';
+        for (let i = 0; i < adet; i++) {
+            grid.appendChild(etiketOlustur(i));
+        }
+    }
+
+    function yazdir() {
+        window.print();
+    }
+
+    function temizle() {
+        document.querySelectorAll('.fila-ad, .fila-tur, .fila-renk').forEach(inp => inp.value = '');
+    }
+
+    gridDoldur();
+</script>
+
+</body>
+</html>
